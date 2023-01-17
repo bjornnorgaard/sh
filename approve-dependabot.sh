@@ -27,8 +27,10 @@ approve_pull_requests_for_repo() {
         fi
     done
 }
-
-echo "Dry run enabled, no actions will be executed"
+      
+if [ "$dry_run" = true ]; then
+    echo "Dry run enabled, no actions will be executed"
+fi
 
 echo "Fetching list of repositories owned by $owner"
 repositories=$(gh repo list --json name --jq .[].name)
