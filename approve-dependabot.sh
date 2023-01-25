@@ -40,5 +40,5 @@ for repo in $repositories; do
     approve_pull_requests_for_repo $repo &
 done
 
+wait
 echo "🚀 Done approving PRs from dependabot"
-sleep 5s
