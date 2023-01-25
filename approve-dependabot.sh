@@ -1,6 +1,5 @@
 echo "😎 Will approved succeeding PRs from dependabot"
 
-dry_run=false
 owner=bjornnorgaard
 
 approve_pull_requests_for_repo() {
@@ -13,24 +12,16 @@ approve_pull_requests_for_repo() {
     pull_request_numbers=$(gh pr list --repo $owner/$repo --search "is:open is:pr -status:failure -review:approved author:app/dependabot" --json number --jq .[].number)
 
     if [ -z "$pull_request_numbers" ]; then
-        echo "👌 No open PRs from dependabot to approve in $owner/$repo"
         return 0
     fi
 
-    echo "Going through repo $repo"
+    echo "👀 Checking repo $repo"
 
     for number in $pull_request_numbers; do
-        if [ "$dry_run" = false ]; then
-            gh pr review $number --repo $owner/$repo --approve --body "@dependabot squash and merge"
-        else
-            echo "Would have approved $owner/$repo PR #$number"
-        fi
+            gh pr review $number --repo $owner/$repo --approve --body "@dependabot squash and merge" &>/dev/null
+            echo "✅ Approved $owner/$repo #$number"
     done
 }
-      
-if [ "$dry_run" = true ]; then
-    echo "Dry run enabled, no actions will be executed"
-fi
 
 echo "Fetching list of repositories owned by $owner"
 repositories=$(gh repo list --json name --jq .[].name)
@@ -41,4 +32,5 @@ for repo in $repositories; do
 done
 
 wait
+
 echo "🚀 Done approving PRs from dependabot"
