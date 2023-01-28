@@ -5,7 +5,7 @@ owner=bjornnorgaard
 approve_pull_requests_for_repo() {
     repo=$1
     if [ -z "$repo" ]; then
-        echo "No repo supplied"
+        echo "❌ No repo supplied, exiting"
         return
     fi
 
@@ -15,7 +15,7 @@ approve_pull_requests_for_repo() {
         return 0
     fi
 
-    echo "👀 Checking repo $repo"
+    echo "👀 Checking PRs of $repo"
 
     for number in $pull_request_numbers; do
             gh pr review $number --repo $owner/$repo --approve --body "@dependabot squash and merge" &>/dev/null
